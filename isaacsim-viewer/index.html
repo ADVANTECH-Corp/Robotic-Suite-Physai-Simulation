@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Isaac Sim WebRTC Viewer</title>
+    <style>
+      #server-panel {
+        position: fixed; inset: 0;
+        display: flex; align-items: center; justify-content: center;
+        background: #1a1a2e; z-index: 999; font-family: sans-serif;
+      }
+      #server-panel.hidden { display: none; }
+      #server-box {
+        background: #16213e; border: 1px solid #0f3460;
+        border-radius: 12px; padding: 2rem 2.5rem;
+        display: flex; flex-direction: column; gap: 1rem;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        min-width: 320px;
+      }
+      #server-box h2 { margin: 0; color: #e0e0e0; font-size: 1.1rem; }
+      #server-box label { color: #a0a0b0; font-size: 0.9rem; }
+      #server-input {
+        padding: 0.6rem 0.8rem; border-radius: 6px;
+        border: 1px solid #0f3460; background: #0f3460;
+        color: #fff; font-size: 1rem; outline: none;
+      }
+      #server-input:focus { border-color: #76b900; }
+      #connect-btn {
+        padding: 0.65rem; border-radius: 6px; border: none;
+        background: #76b900; color: #fff; font-size: 1rem;
+        cursor: pointer; font-weight: bold; transition: background 0.2s;
+      }
+      #connect-btn:hover { background: #5a8c00; }
+    </style>
+  </head>
+  <body>
+    <!-- Server IP input panel -->
+    <div id="server-panel">
+      <div id="server-box">
+        <h2>🚀 Isaac Sim WebRTC Viewer</h2>
+        <label for="server-input">Isaac Sim Server IP</label>
+        <input id="server-input" type="text" placeholder="e.g. 172.22.12.128" autocomplete="off" />
+        <button id="connect-btn">Connect</button>
+      </div>
+    </div>
+    <div id="app" style="display: flex;">
+      <div id="stream-container">
+        <div id="main-div" style="display: none;">
+          <div id="aspect-ratio-div" tabindex="0">
+            <video id="remote-video"></video>
+            <audio id="remote-audio" muted></audio>
+          </div>
+        </div>
+        <div id="loading-stream-message" style="display: flex;">
+          <p>WAITING FOR STREAM...</p>
+        </div>
+        <div id="error-message" style="display: none;">
+          <h2>ERROR</h2>
+          <p id="error-message-text">FAILED TO CONNECT TO STREAM</p>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

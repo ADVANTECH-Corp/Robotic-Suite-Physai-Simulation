@@ -1,0 +1,240 @@
+{
+    "events": {
+        "init_omx_arm_pose": {
+            "default_pose": [
+                -0.0138,
+                -2.02178,
+                1.57386,
+                1.695,
+                -0.01994,
+                0.69335,
+                -0.69335
+            ]
+        },
+        "randomize_omx_joint_state": {
+            "mean": 0.0,
+            "std": 0.02
+        },
+        "randomize_bottle_positions": {
+            "pose_range": {
+                "x": [
+                    -0.05,
+                    0.04
+                ],
+                "y": [
+                    0.2,
+                    0.35
+                ],
+                "z": [
+                    -0.30074,
+                    -0.30074
+                ],
+                "yaw": [
+                    -1.5707963267948966,
+                    -1.5707963267948966
+                ]
+            },
+            "min_separation": 0.1
+        },
+        "randomize_basket_positions": {
+            "pose_range": {
+                "x": [
+                    -0.1848,
+                    -0.1848
+                ],
+                "y": [
+                    0.27301,
+                    0.27301
+                ],
+                "z": [
+                    -0.29502,
+                    -0.29502
+                ],
+                "roll": [
+                    -1.5707963267948966,
+                    -1.5707963267948966
+                ],
+                "pitch": [
+                    3.141592653589793,
+                    3.141592653589793
+                ],
+                "yaw": [
+                    0.0,
+                    0.0
+                ]
+            },
+            "min_separation": 0.1
+        },
+        "randomize_scene_light": {
+            "intensity_range": [
+                1500.0,
+                1500.0
+            ],
+            "color_range": [
+                [
+                    0.5,
+                    0.5
+                ],
+                [
+                    0.5,
+                    0.5
+                ],
+                [
+                    0.5,
+                    0.5
+                ]
+            ]
+        },
+        "randomize_sphere_light": {
+            "intensity_range": [
+                50000.0,
+                50000.0
+            ],
+            "color_range": [
+                [
+                    1.0,
+                    1.0
+                ],
+                [
+                    1.0,
+                    1.0
+                ],
+                [
+                    1.0,
+                    1.0
+                ]
+            ],
+            "pose_range": {
+                "x": [
+                    1.11564,
+                    1.11564
+                ],
+                "y": [
+                    1.0323,
+                    1.0323
+                ],
+                "z": [
+                    2.5,
+                    2.5
+                ]
+            }
+        },
+        "randomize_top_camera": {
+            "pose_range": {
+                "x": [
+                    -0.01,
+                    0.01
+                ],
+                "y": [
+                    -0.01,
+                    0.01
+                ],
+                "z": [
+                    -0.01,
+                    0.01
+                ],
+                "roll": [
+                    -0.01,
+                    0.01
+                ],
+                "pitch": [
+                    -0.01,
+                    0.01
+                ],
+                "yaw": [
+                    -0.01,
+                    0.01
+                ]
+            }
+        }
+    },
+    "actions": {
+        "record": {
+            "arm_action": {
+                "scale": 1.0,
+                "offset": {
+                    "joint1": 0.0,
+                    "joint2": 0.02572,
+                    "joint3": 0.15,
+                    "joint4": 0.0015,
+                    "joint5": 0.0
+                }
+            },
+            "gripper_action": {
+                "scale": 1.0
+            }
+        },
+        "mimic_ik": {
+            "arm_action": {
+                "controller": {
+                    "ik_params": {
+                        "lambda_val": 0.05
+                    }
+                },
+                "body_offset": {
+                    "pos": [
+                        0.09,
+                        0.0,
+                        0.0
+                    ]
+                }
+            },
+            "gripper_action": {
+                "scale": 1.0
+            }
+        }
+    },
+    "scene": {
+        "cam_wrist": {
+            "height": 480,
+            "width": 640,
+            "spawn": {
+                "focal_length": 2.79,
+                "focus_distance": 200.0,
+                "horizontal_aperture": 3.2,
+                "clipping_range": [
+                    0.01,
+                    100.0
+                ]
+            },
+            "offset": {
+                "pos": [
+                    0.07041,
+                    0.00104,
+                    0.02851
+                ],
+                "rot": [
+                    0.66823,
+                    0.27316,
+                    -0.2574,
+                    -0.64234
+                ]
+            }
+        },
+        "cam_top": {
+            "height": 480,
+            "width": 640,
+            "spawn": {
+                "focal_length": 16.9157,
+                "focus_distance": 102.3,
+                "horizontal_aperture": 20.955,
+                "clipping_range": [
+                    0.01,
+                    100.0
+                ]
+            },
+            "offset": {
+                "pos": [
+                    -0.0203,
+                    -0.1053,
+                    0.4543
+                ],
+                "rot": {
+                    "roll": 23.286814572667502,
+                    "pitch": 0.34823118558163846,
+                    "yaw": -1.3320876219614206
+                }
+            }
+        }
+    }
+}
