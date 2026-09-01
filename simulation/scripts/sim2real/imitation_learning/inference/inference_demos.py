@@ -34,10 +34,16 @@ parser.add_argument("--task", type=str, required=True, help="Name of the task.")
 parser.add_argument("--seed", type=int, default=42, help="Seed for the environment.")
 parser.add_argument("--step_hz", type=int, default=60, help="Environment stepping rate in Hz.")
 parser.add_argument("--robot_type", type=str, default="OMX", choices=['OMX', 'SO101'], help="Type of robot to use for teleoperation.")
+parser.add_argument("--num_trials", type=int, default=0, help="Stop after N episodes and report the success rate. 0 = run forever.")
+parser.add_argument("--num_success", type=int, default=0, help="Stop early once N episodes have succeeded. 0 = disabled.")
+parser.add_argument("--max_trials", type=int, default=0, help="Hard cap on episodes, so --num_success can never run forever. 0 = no cap.")
 
 # append AppLauncher cli args
 AppLauncher.add_app_launcher_args(parser)
 args_cli = parser.parse_args()
+if bool(args_cli.num_success) != bool(args_cli.max_trials):
+    parser.error("--num_success and --max_trials must be set together (the cap keeps the success target from running forever).")
+
 app_launcher = AppLauncher(vars(args_cli))
 simulation_app = app_launcher.app
 
@@ -106,6 +112,13 @@ def main():
     teleop_interface.reset()
     rate_limiter = RateLimiter(args_cli.step_hz)
 
+    # success-rate counters; env auto-resets on success / bottle drop / time_out.
+    # entirely inert unless one of the eval flags is given
+    eval_enabled = bool(args_cli.num_trials or args_cli.num_success or args_cli.max_trials)
+    has_success_term = "success" in env.termination_manager.active_terms
+    trials = 0
+    successes = 0
+
     print("[INFO] Inference loop started. Press 'R' to reset environment.")
     should_reset_task = False
     def reset_task():
@@ -140,8 +153,31 @@ def main():
                     if actions.ndim == 1:
                         actions = actions.unsqueeze(0)
                     env.step(actions)
+
+                    if eval_enabled and env.termination_manager.dones[0].item():
+                        trials += 1
+                        ok = has_success_term and env.termination_manager.get_term("success")[0].item()
+                        successes += int(ok)
+                        print(
+                            f"[EVAL] trial {trials}/{args_cli.num_trials or '-'}: "
+                            f"{'SUCCESS' if ok else 'FAIL'} | "
+                            f"{successes}/{trials} = {successes / trials:.1%}"
+                        )
+                        if (
+                            (args_cli.num_trials and trials >= args_cli.num_trials)
+                            or (args_cli.max_trials and trials >= args_cli.max_trials)
+                            or (args_cli.num_success and successes >= args_cli.num_success)
+                        ):
+                            break
             if rate_limiter:
                 rate_limiter.sleep(env)
+
+    if trials:
+        print(f"[EVAL] final success rate: {successes}/{trials} = {successes / trials:.1%}")
+        # stopping on a success target biases k/n upward (the last trial is always a
+        # success by construction); (k-1)/(n-1) is the unbiased estimate for that stop rule
+        if args_cli.num_success and successes >= args_cli.num_success and trials > 1:
+            print(f"[EVAL] unbiased estimate: {(successes - 1) / (trials - 1):.1%}")
 
     env.close()
     simulation_app.close()
